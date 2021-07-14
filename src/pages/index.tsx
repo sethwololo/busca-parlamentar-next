@@ -21,7 +21,7 @@ export default function Home({ senators }: HomeProps) {
 
   }, [senators])
   return (
-    <Box bg="gray.100" color="gray.900">
+    <Box bg="gray.100" color="gray.900" minH="100vh">
       <Head>
         <title>Busca Parlamentar</title>
       </Head>

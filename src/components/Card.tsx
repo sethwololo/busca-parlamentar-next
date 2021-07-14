@@ -26,7 +26,11 @@ export function Card({ name, photoUrl, uf, party, id }: CardProps) {
           cursor="pointer"
           _hover={{
             boxShadow: 'lg',
-            transform: 'scale(1.05)',
+            transform: 'scale(1.02)',
+            color: 'teal.700',
+            border: '1px solid',
+            borderColor: 'teal.700',
+            shadowColor: 'teal.600'
           }}
         >
           <Avatar name={name} src={photoUrl} mr="2" size="lg" />
@@ -37,12 +41,18 @@ export function Card({ name, photoUrl, uf, party, id }: CardProps) {
                   {name}
                 </Text>
               </LinkOverlay>
-              <Badge ml="auto" variant="outline" colorScheme="teal" alignSelf="start">
+              <Badge 
+                ml="auto" 
+                variant="outline" 
+                colorScheme="teal" 
+                alignSelf="start"
+                _hover={{ variant: 'subtle' }}
+              >
                 {uf}
               </Badge>
             </Flex>
 
-            <Text fontWeight="medium" color="gray.700" fontSize="sm">{party}</Text>
+            <Text fontWeight="medium" opacity={0.8} fontSize="sm" >{party}</Text>
           </Box>
         </Flex>
       </LinkBox>
