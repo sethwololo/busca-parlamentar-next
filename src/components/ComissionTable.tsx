@@ -29,7 +29,7 @@ export function ComissionTable({ comissions }: ComissionTableProps) {
     sm: false,
     base: true,
   })
-  console.log(isLargeScreen);
+
 
   return (
     <Table variant="striped" colorScheme="gray" size="sm" maxW="100%" >
