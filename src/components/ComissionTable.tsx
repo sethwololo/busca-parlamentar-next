@@ -52,7 +52,7 @@ export function ComissionTable({ comissions }: ComissionTableProps) {
           <Tr key={comission.DataFim + comission.IdentificacaoComissao.CodigoComissao}>
             <Td fontSize={['xx-small', 'xs', 'sm', 'sm']} textAlign="center">
               <Tooltip placement="top-start" label={comission.IdentificacaoComissao.NomeComissao}>
-                {`${comission.IdentificacaoComissao.SiglaComissao} 🛈`}
+                {`${comission.IdentificacaoComissao.SiglaComissao} ℹ️`}
               </Tooltip>
             </Td>
             <Td textAlign="center" >
