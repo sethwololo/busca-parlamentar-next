@@ -2,15 +2,17 @@ import { Stat as ChakraStat, StatHelpText, StatLabel, StatNumber } from '@chakra
 
 interface StatProps {
   label: string;
-  data: string;
+  data?: string | number;
   helpText?: string;
 }
 
 export function Stat({ label, data, helpText }: StatProps) {
   return (
     <ChakraStat display="flex">
-      <StatLabel>{label}</StatLabel>
-      <StatNumber alignSelf="end">{data}</StatNumber>
+      <StatLabel>
+        {label}
+      </StatLabel>
+      <StatNumber >{data}</StatNumber>
       {helpText && (
         <StatHelpText>
           {helpText}

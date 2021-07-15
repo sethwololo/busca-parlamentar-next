@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
-import { Box, Flex, Avatar, Text, Heading, useBreakpointValue, SimpleGrid, StatGroup, IconButton } from '@chakra-ui/react';
+import { Box, Flex, Avatar, Text, Heading, useBreakpointValue, SimpleGrid, StatGroup, IconButton, Badge, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 
 import type { Senator } from 'types/senator';
 
@@ -9,14 +9,27 @@ import { Header } from "components/Header";
 import { FiArrowLeft } from "react-icons/fi";
 import React from "react";
 import { Stat } from "components/Stat";
+import { queryClient } from "services/queryClient";
+import { getSenatorInfo, useSenatorInfo } from "services/hooks/useSenatorInfo";
+import { dehydrate } from "react-query/hydration";
+import { useRouter } from "next/dist/client/router";
+import Link from "next/link";
+import { ComissionTable } from "components/ComissionTable";
 
 interface SenatorProps {
   senator: any;
+  tableMember: string;
+  leadershipMember: string;
 }
 
-export default function Parlamentar({ senator }: SenatorProps) {
-  console.log(senator)
-  const { IdentificacaoParlamentar } = senator;
+export default function Parlamentar() {
+  const { query, back } = useRouter();
+  const { data } = useSenatorInfo(String(query.id));
+
+  console.log(data)
+  // const sortedTitular = data?.ComissoesTitular.sort((a, b) => (Date.now(a.DataInicio) - Date.Now(b.DataInicio))) 
+
+
   const isSmallScreen = useBreakpointValue({
     sm: true,
     base: false
@@ -29,7 +42,7 @@ export default function Parlamentar({ senator }: SenatorProps) {
       </Head>
       <Header />
 
-      <Flex as="main" mx="4" justify="center">
+      <Flex as="main" mx="4" align="center" direction="column">
         <Flex
           as="section"
           align="center"
@@ -42,8 +55,11 @@ export default function Parlamentar({ senator }: SenatorProps) {
           shadow="md"
           p="8"
           position="relative"
+          border="1px solid"
+          borderColor="gray.200"
         >
           <IconButton
+            as="a"
             position="relative"
             top="0"
             left="0"
@@ -52,55 +68,88 @@ export default function Parlamentar({ senator }: SenatorProps) {
             aria-label="Voltar"
             icon={<FiArrowLeft size={24} />}
             alignSelf="start"
-          // colorScheme="red"
-          // variant="ghost"
-          // size="sm"
+            onClick={back}
           />
+
           <Avatar
-            name={IdentificacaoParlamentar.NomeParlamentar}
-            src={IdentificacaoParlamentar.UrlFotoParlamentar}
+            name={data?.IdentificacaoParlamentar.NomeParlamentar}
+            src={data?.IdentificacaoParlamentar.UrlFotoParlamentar}
             size="2xl"
             showBorder={true}
             color="teal"
             mt="-20"
             boxShadow="md"
           />
+          <Flex mt="2">
+            <Badge colorScheme="purple" variant="outline" fontSize="sm" mr="1">
+              {data?.IdentificacaoParlamentar.SiglaPartidoParlamentar}
+            </Badge>
+            <Badge colorScheme="teal" variant="outline" fontSize="sm">
+              {data?.IdentificacaoParlamentar.UfParlamentar}
+            </Badge>
+          </Flex>
 
-          <Heading textAlign="center">
-            {IdentificacaoParlamentar.NomeParlamentar}
+          <Heading textAlign="center" mt="2">
+            {data?.IdentificacaoParlamentar.NomeParlamentar}
           </Heading>
-          <Text fontWeight="medium" opacity={0.8} textAlign="center">
-            {IdentificacaoParlamentar.NomeCompletoParlamentar}
+          <Text fontWeight="medium" opacity={0.8} textAlign="center" mt="-1">
+            {data?.IdentificacaoParlamentar.NomeCompletoParlamentar}
+            {' | '}
+            <Link href={String(data?.IdentificacaoParlamentar.UrlPaginaParlamentar)}>
+              Página oficial
+            </Link>
           </Text>
-          <StatGroup as={SimpleGrid} spacing={2} maxW="100%">
-            <Stat 
-              label="Partido"
-              data={IdentificacaoParlamentar.SiglaPartidoParlamentar}
-            />
-            <Stat 
-              label="Estado"
-              data={IdentificacaoParlamentar.UfParlamentar}
-            />
-            <Stat 
+
+          <StatGroup as={SimpleGrid} spacing={4} mt="4">
+            <Stat
               label="Membro da mesa"
-              data={IdentificacaoParlamentar.SiglaPartidoParlamentar}
+              data={data?.MembroMesa}
             />
-            <Stat 
+            <Stat
               label="Membro da liderança"
-              data={IdentificacaoParlamentar.SiglaPartidoParlamentar}
+              data={data?.MembroLideranca}
             />
-            <Stat 
-              label="Comissões como titular"
-              data={IdentificacaoParlamentar.SiglaPartidoParlamentar}
+            <Stat
+              label="Titular em"
+              data={data?.ComissoesTitular.length}
+              helpText="comissões"
             />
-            <Stat 
-              label="Comissões como suplente"
-              data={IdentificacaoParlamentar.SiglaPartidoParlamentar}
+            <Stat
+              label="Suplente em"
+              data={data?.ComissoesSuplente.length}
+              helpText="comissões"
             />
-
           </StatGroup>
+        </Flex>
 
-
+        <Flex
+          as="section"
+          justify="center"
+          w="100%"
+          maxW="1120px"
+          bg="gray.50"
+          rounded="xl"
+          shadow="md"
+          position="relative"
+          border="1px solid"
+          borderColor="gray.200"
+          mt="2"
+          mb="8"
+        >
+          <Tabs variant="enclosed" colorScheme="teal" w="100%" maxW="100%" isLazy isFitted>
+            <TabList>
+              <Tab>Titular</Tab>
+              <Tab>Suplente</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <ComissionTable comissions={data?.ComissoesTitular} />
+              </TabPanel>
+              <TabPanel>
+                <ComissionTable comissions={data?.ComissoesSuplente} />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </Flex>
       </Flex>
     </Box>
@@ -112,7 +161,7 @@ type SenatorListItem = {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const response = await api.get('/senador/lista/atual')
+  const response = await api.get('/senador/lista/atual');
   const { Parlamentar } = response.data.ListaParlamentarEmExercicio.Parlamentares;
   const senatorList = Parlamentar.map((senator: SenatorListItem) => senator.IdentificacaoParlamentar);
 
@@ -129,20 +178,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const response = await api.get(`/senador/${params?.id}`);
-  const senator = response.data.DetalheParlamentar.Parlamentar;
-
-  const senatorInfo = {
-    name: senator.NomeParlamentar,
-    fullName: senator.NomeCompletoParlamentar,
-    photoUrl: senator.UrlFotoParlamentar,
-    party: senator.SiglaPartidoParlamentar,
-    officialPage: senator.UrlPaginaParlamentar,
-  }
+  await queryClient.prefetchQuery(
+    ['senator-info', String(params?.id)],
+    () => getSenatorInfo(String(params?.id))
+  );
 
   return {
     props: {
-      senator,
-    }
+      // senator,
+      dehydratedState: dehydrate(queryClient),
+    },
+    revalidate: 60 * 60 * 24 // 24h
   };
 }
