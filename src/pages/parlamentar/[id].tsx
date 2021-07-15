@@ -26,14 +26,10 @@ export default function Parlamentar() {
   const { query, back } = useRouter();
   const { data } = useSenatorInfo(String(query.id));
 
-  console.log(data)
-  // const sortedTitular = data?.ComissoesTitular.sort((a, b) => (Date.now(a.DataInicio) - Date.Now(b.DataInicio))) 
-
-
-  const isSmallScreen = useBreakpointValue({
-    sm: true,
-    base: false
-  });
+  // const isSmallScreen = useBreakpointValue({
+  //   sm: true,
+  //   base: false
+  // });
 
   return (
     <Box bg="gray.100" color="gray.900" minH="100vh">
@@ -142,10 +138,10 @@ export default function Parlamentar() {
               <Tab>Suplente</Tab>
             </TabList>
             <TabPanels>
-              <TabPanel>
+              <TabPanel >
                 <ComissionTable comissions={data?.ComissoesTitular} />
               </TabPanel>
-              <TabPanel>
+              <TabPanel >
                 <ComissionTable comissions={data?.ComissoesSuplente} />
               </TabPanel>
             </TabPanels>

@@ -1,6 +1,24 @@
 import type { Comission } from 'types/senator';
-import { Table, Tr, Th, Td, Thead, Tbody, Badge, useBreakpointValue, Tooltip, Icon } from '@chakra-ui/react';
 import { FiInfo } from 'react-icons/fi';
+import {
+  Table,
+  Tr,
+  Th,
+  Td,
+  Thead,
+  Tbody,
+  Badge,
+  useBreakpointValue,
+  Tooltip,
+  IconButton,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
+  PopoverCloseButton,
+  Text
+} from '@chakra-ui/react';
+
 
 interface ComissionTableProps {
   comissions?: Comission[];
@@ -9,43 +27,88 @@ interface ComissionTableProps {
 export function ComissionTable({ comissions }: ComissionTableProps) {
   const isLargeScreen = useBreakpointValue({
     sm: false,
-
+    base: true,
   })
+  console.log(isLargeScreen);
 
   return (
-    <Table variant="striped" colorScheme="gray" size="sm" maxW="100%"  overflowX="auto">
+    <Table variant="striped" colorScheme="gray" size="sm" maxW="100%" >
       <Thead>
         <Tr>
           <Th textAlign="center">Nome</Th>
           <Th textAlign="center">Casa</Th>
-          <Th textAlign="center">Participação</Th>
-          <Th textAlign="center">Início</Th>
-          <Th textAlign="center">Fim</Th>
+          {isLargeScreen ? (
+            <Th textAlign="center">Datas</Th>
+          ) : (
+            <>
+              <Th textAlign="center">Início</Th>
+              <Th textAlign="center">Fim</Th>
+            </>
+          )}
         </Tr>
       </Thead>
       <Tbody>
         {comissions?.map((comission: Comission) => (
           <Tr key={comission.DataFim + comission.IdentificacaoComissao.CodigoComissao}>
-            <Td>
+            <Td fontSize={['xx-small', 'xs', 'sm', 'sm']} textAlign="center">
               <Tooltip placement="top-start" label={comission.IdentificacaoComissao.NomeComissao}>
                 {`${comission.IdentificacaoComissao.SiglaComissao} 🛈`}
               </Tooltip>
             </Td>
-            <Td textAlign="center">
-              <Badge colorScheme="purple" variant="outline">
-                {comission.IdentificacaoComissao.SiglaCasaComissao}
-              </Badge>
-            </Td>
             <Td textAlign="center" >
-              <Badge
-                variant="outline"
-                colorScheme={comission.DescricaoParticipacao === 'Titular' ? 'teal' : 'blue'}
-              >
-                {comission.DescricaoParticipacao}
+              <Badge colorScheme="purple" variant="outline" fontSize={['xx-small', 'xs', 'xs']}>
+                {
+                  isLargeScreen
+                    ? comission.IdentificacaoComissao.SiglaCasaComissao
+                    : comission.IdentificacaoComissao.NomeCasaComissao
+                }
               </Badge>
             </Td>
-            <Td textAlign="center">{comission.DataInicio}</Td>
-            <Td textAlign="center">{comission.DataFim}</Td>
+          
+            {isLargeScreen ? (
+              <Td textAlign="center">
+                <Popover isLazy placement="top-start">
+                  <PopoverTrigger>
+                    <IconButton
+                      aria-label="Visualizar datas"
+                      icon={<FiInfo />}
+                      variant="outline"
+                      colorScheme="teal"
+                      size="xs"
+                    />
+                  </PopoverTrigger>
+                  <PopoverContent maxW="200px">
+                    <PopoverCloseButton />
+                    <PopoverBody>
+                      <Text as="span" display="flex">
+                        <Text fontWeight="medium"  mr="1">
+                          Início:
+                        </Text>
+                        {comission.DataInicio}
+                      </Text>
+
+                      {comission.DataFim !== '-' && (
+                        <Text as="span" display="flex">
+                          <Text fontWeight="medium"  mr="1">
+                            Fim:
+                          </Text>
+                          {comission.DataFim}
+                        </Text>
+                      )}
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+              </Td>
+            ) : (
+              <>
+                <Td textAlign="center" fontSize={['xx-small', 'xs', 'sm']}>
+                  {comission.DataInicio}
+                </Td>
+                <Td textAlign="center" fontSize={['xx-small', 'xs', 'sm']}>
+                  {comission.DataFim}
+                </Td>
+              </>
+            )}
           </Tr>
         ))}
 
