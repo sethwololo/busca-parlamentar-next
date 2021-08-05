@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
-import { Box, Flex, Avatar, Text, Heading, useBreakpointValue, SimpleGrid, StatGroup, IconButton, Badge, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box, Flex, Avatar, Text, Heading, useBreakpointValue, SimpleGrid, StatGroup, IconButton, Badge, Tab, TabList, TabPanel, TabPanels, Tabs, useColorModeValue } from '@chakra-ui/react';
 
 import type { Senator } from 'types/senator';
 
@@ -132,6 +132,18 @@ export default function Parlamentar() {
           mt="2"
           mb="8"
         >
+          {/* <Flex
+            bg={useColorModeValue('gray.50', 'gray.700')}
+            border="1px"
+            borderColor={useColorModeValue('gray.300', 'gray.600')}
+            p={4}
+            spacing={3}
+            rounded="lg"
+            direction="column"
+            flex="1"
+          >
+
+          </Flex> */}
           <Tabs variant="enclosed" colorScheme="teal" w="100%" maxW="100%" isLazy isFitted>
             <TabList>
               <Tab>Titular</Tab>

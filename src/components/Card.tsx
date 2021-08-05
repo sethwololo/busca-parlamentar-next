@@ -14,7 +14,7 @@ export function Card({ name, photoUrl, uf, party, id }: CardProps) {
     <Link href={`/parlamentar/${id}`} passHref>
       <LinkBox>
         <Flex
-          bg="gray.50"
+          bg="white"
           p="2"
           align="center"
           w="100%"
@@ -26,7 +26,7 @@ export function Card({ name, photoUrl, uf, party, id }: CardProps) {
           cursor="pointer"
           _hover={{
             boxShadow: 'lg',
-            transform: 'scale(1.02)',
+            transform: 'translateY(-5px)',
             color: 'teal.700',
             border: '1px solid',
             borderColor: 'teal.700',

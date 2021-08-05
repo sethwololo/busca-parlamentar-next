@@ -10,16 +10,19 @@ type SenatorListObject = {
   senators: Senator[];
 }
 
-export const getSenatorlist = async (): Promise<SenatorListObject> => {
+type SenatorList = Senator[]
+
+export const getSenatorlist = async (): Promise<Senator[]> => {
   const response = await api.get('/senador/lista/atual');
   const { Parlamentar } = response.data.ListaParlamentarEmExercicio.Parlamentares;
-  const senators = Parlamentar.map((senator: SenatorListItem) => senator.IdentificacaoParlamentar)
+  const senators: Senator[] = Parlamentar.map((senator: SenatorListItem) => senator.IdentificacaoParlamentar);
 
-  return { senators };
+  return senators;
 }
 
-export const useSenatorList = (): UseQueryResult<SenatorListObject> => {
+export const useSenatorList = (): UseQueryResult<Senator[]> => {
   return useQuery('senator-list', getSenatorlist, {
     staleTime: 1000 * 60 * 60 * 24, // 24h
+    initialData: [],
   });
 }
