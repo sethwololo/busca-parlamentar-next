@@ -25,10 +25,6 @@ export function Card({ name, photoUrl, uf, party, id, fullName }: CardProps) {
   const borderColor = useColorModeValue('gray.200', 'gray.600');
   const textColor = useColorModeValue('gray.900', 'gray.50');
   const hoveredColor = useColorModeValue('teal.700', 'teal.200');
-  // const isSmallScreen = useBreakpointValue({
-  //   base: true,
-  //   lg: false,
-  // });
 
   return (
     <Link href={`/parlamentar/${id}`} passHref>
@@ -42,11 +38,11 @@ export function Card({ name, photoUrl, uf, party, id, fullName }: CardProps) {
           borderRadius="xl"
           border="1px solid"
           borderColor={borderColor}
-          boxShadow="md"
+          boxShadow="sm"
           transition="transform 0.2s"
           cursor="pointer"
           _hover={{
-            boxShadow: 'lg',
+            boxShadow: 'md',
             transform: 'translateY(-2px)',
             color: hoveredColor,
             border: '1px solid',

@@ -38,10 +38,10 @@ export type SenatorInfo = {
   IdentificacaoParlamentar: {
     CodigoParlamentar: string;
     EmailParlamentar: string;
-    // FormaTratamento: string;
+    FormaTratamento: string;
     NomeCompletoParlamentar: string;
     NomeParlamentar: string;
-    // SexoParlamentar: string;
+    SexoParlamentar: string;
     SiglaPartidoParlamentar: string;
     UfParlamentar: string;
     UrlFotoParlamentar: string;

@@ -33,6 +33,7 @@ import { Stat } from 'components/Stat';
 import { queryClient } from 'services/queryClient';
 import { getSenatorInfo, useSenatorInfo } from 'services/hooks/useSenatorInfo';
 import { ComissionTable } from 'components/ComissionTable';
+import { useMemo } from 'react';
 
 export default function Parlamentar() {
   const { query } = useRouter();
@@ -40,13 +41,15 @@ export default function Parlamentar() {
 
   const bgColor = useColorModeValue('gray.100', 'gray.900');
   const textColor = useColorModeValue('gray.900', 'gray.50');
-  const contentBgColor = useColorModeValue('gray.50', 'gray.700');
+  const contentBgColor = useColorModeValue('white', 'gray.700');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
 
-  // const isSmallScreen = useBreakpointValue({
-  //   sm: true,
-  //   base: false
-  // });
+  const pronoun = useMemo(() => {
+    if (data?.IdentificacaoParlamentar.SexoParlamentar === 'Masculino') {
+      return 'o';
+    }
+    return 'a';
+  }, [data?.IdentificacaoParlamentar.SexoParlamentar]);
 
   return (
     <Box bg={bgColor} color={textColor} minH="100vh">
@@ -54,6 +57,12 @@ export default function Parlamentar() {
         <title>
           {data?.IdentificacaoParlamentar.NomeParlamentar} | Busca Parlamentar
         </title>
+        <meta
+          name="description"
+          content={`Informações sobre ${pronoun} senador${
+            pronoun === 'a' ? 'a' : ''
+          } ${data?.IdentificacaoParlamentar.NomeParlamentar}`}
+        />
       </Head>
       <Header />
 
@@ -210,7 +219,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   return {
     props: {
-      // senator,
       dehydratedState: dehydrate(queryClient),
     },
     revalidate: 60 * 60 * 24, // 24h

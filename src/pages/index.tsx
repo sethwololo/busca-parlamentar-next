@@ -41,6 +41,8 @@ export default function Home({ senators, parties, states }: HomeProps) {
   const bgColor = useColorModeValue('gray.100', 'gray.900');
   const textColor = useColorModeValue('gray.900', 'gray.50');
   const inputFocusColor = useColorModeValue('teal.500', 'teal.200');
+  const contentBgColor = useColorModeValue('white', 'gray.700');
+  const borderColor = useColorModeValue('gray.200', 'gray.600');
 
   const handleSearchboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchBox(event.target?.value);
@@ -81,7 +83,18 @@ export default function Home({ senators, parties, states }: HomeProps) {
 
       <Header />
       <Flex as="main" mx="2" direction="column">
-        <Stack direction={['column', 'row']} columns={3} maxW={1120} mx="auto">
+        <Stack
+          direction={['column', 'row']}
+          columns={3}
+          maxW={1120}
+          mx="auto"
+          bg={contentBgColor}
+          p={6}
+          rounded="lg"
+          border="1px"
+          boxShadow="sm"
+          borderColor={borderColor}
+        >
           <Input
             placeholder="Digite o nome ou código parlamentar"
             variant="outline"
