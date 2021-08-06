@@ -36,12 +36,12 @@ export function Card({ name, photoUrl, uf, party, id, fullName }: CardProps) {
         <Flex
           bg={bgColor}
           color={textColor}
-          borderColor={borderColor}
           p="2"
           align="center"
           w="100%"
           borderRadius="xl"
           border="1px solid"
+          borderColor={borderColor}
           boxShadow="md"
           transition="transform 0.2s"
           cursor="pointer"
