@@ -1,8 +1,11 @@
-import { Flex, Text, IconButton } from "@chakra-ui/react";
-import Link from "next/link";
-import { FiMoon } from 'react-icons/fi';
+import { Flex, Text, useColorModeValue } from '@chakra-ui/react';
+import Link from 'next/link';
+import { ThemeButton } from './ThemeButton';
 
 export function Header() {
+  const titleColor = useColorModeValue('gray.900', 'gray.50');
+  const titleHighlightColor = useColorModeValue('teal.500', 'teal.200');
+
   return (
     <Flex
       mx="auto"
@@ -16,23 +19,22 @@ export function Header() {
       mb="8"
     >
       <Link href="/" passHref>
-        <Text as="a"
-          fontWeight="black" 
-          fontSize={["2xl", "3xl"]}  
+        <Text
+          as="a"
+          fontWeight="black"
+          color={titleColor}
+          fontSize={['2xl', '3xl']}
           transition="filter 0.2s"
-          _hover={{filter: 'brightness(0.85)'}}
+          _hover={{ filter: 'brightness(0.85)' }}
         >
-          Busca<Text color="teal.500" display="inline-block" as="span" >Parlamentar</Text>
+          Busca
+          <Text color={titleHighlightColor} display="inline-block" as="span">
+            Parlamentar
+          </Text>
         </Text>
       </Link>
 
-      <IconButton
-        variant="ghost"
-        aria-label="Usar tema escuro"
-        ml="2"
-        colorScheme="teal"
-        icon={<FiMoon size={24} />}
-      />
+      <ThemeButton />
     </Flex>
   );
 }

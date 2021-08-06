@@ -1,4 +1,9 @@
-import { Stat as ChakraStat, StatHelpText, StatLabel, StatNumber } from '@chakra-ui/react';
+import {
+  Stat as ChakraStat,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+} from '@chakra-ui/react';
 
 interface StatProps {
   label: string;
@@ -9,15 +14,9 @@ interface StatProps {
 export function Stat({ label, data, helpText }: StatProps) {
   return (
     <ChakraStat display="flex">
-      <StatLabel>
-        {label}
-      </StatLabel>
-      <StatNumber >{data}</StatNumber>
-      {helpText && (
-        <StatHelpText>
-          {helpText}
-        </StatHelpText>
-      )}
+      <StatLabel>{label}</StatLabel>
+      <StatNumber>{data}</StatNumber>
+      {helpText && <StatHelpText>{helpText}</StatHelpText>}
     </ChakraStat>
   );
 }

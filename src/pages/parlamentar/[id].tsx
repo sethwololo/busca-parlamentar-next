@@ -1,29 +1,44 @@
-import { GetStaticPaths, GetStaticProps } from "next";
-import Head from "next/head";
-import { Box, Flex, Avatar, Text, Heading, useBreakpointValue, SimpleGrid, StatGroup, IconButton, Badge, Tab, TabList, TabPanel, TabPanels, Tabs, useColorModeValue } from '@chakra-ui/react';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import Head from 'next/head';
+import {
+  Box,
+  Flex,
+  Avatar,
+  Text,
+  Heading,
+  SimpleGrid,
+  StatGroup,
+  IconButton,
+  Badge,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from '@chakra-ui/react';
+import { FiArrowLeft } from 'react-icons/fi';
+import { dehydrate } from 'react-query/hydration';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 import type { Senator } from 'types/senator';
 
-import { api } from "services/api";
-import { Header } from "components/Header";
-import { FiArrowLeft } from "react-icons/fi";
-import React from "react";
-import { Stat } from "components/Stat";
-import { queryClient } from "services/queryClient";
-import { getSenatorInfo, useSenatorInfo } from "services/hooks/useSenatorInfo";
-import { dehydrate } from "react-query/hydration";
-import { useRouter } from "next/dist/client/router";
-import Link from "next/link";
-import { ComissionTable } from "components/ComissionTable";
+import { api } from 'services/api';
+import { Header } from 'components/Header';
 
-interface SenatorProps {
-  senator: any;
-  tableMember: string;
-  leadershipMember: string;
-}
+import { Stat } from 'components/Stat';
+import { queryClient } from 'services/queryClient';
+import { getSenatorInfo, useSenatorInfo } from 'services/hooks/useSenatorInfo';
+import { ComissionTable } from 'components/ComissionTable';
+
+// interface SenatorProps {
+//   senator: any;
+//   tableMember: string;
+//   leadershipMember: string;
+// }
 
 export default function Parlamentar() {
-  const { query, back } = useRouter();
+  const { query } = useRouter();
   const { data } = useSenatorInfo(String(query.id));
 
   // const isSmallScreen = useBreakpointValue({
@@ -54,24 +69,25 @@ export default function Parlamentar() {
           border="1px solid"
           borderColor="gray.200"
         >
-          <IconButton
-            as="a"
-            position="relative"
-            top="0"
-            left="0"
-            mt="-4"
-            ml="-4"
-            aria-label="Voltar"
-            icon={<FiArrowLeft size={24} />}
-            alignSelf="start"
-            onClick={back}
-          />
+          <Link passHref href="/">
+            <IconButton
+              as="a"
+              position="relative"
+              top="0"
+              left="0"
+              mt="-4"
+              ml="-4"
+              aria-label="Voltar"
+              icon={<FiArrowLeft size={24} />}
+              alignSelf="start"
+            />
+          </Link>
 
           <Avatar
             name={data?.IdentificacaoParlamentar.NomeParlamentar}
             src={data?.IdentificacaoParlamentar.UrlFotoParlamentar}
             size="2xl"
-            showBorder={true}
+            showBorder
             color="teal"
             mt="-20"
             boxShadow="md"
@@ -91,20 +107,16 @@ export default function Parlamentar() {
           <Text fontWeight="medium" opacity={0.8} textAlign="center" mt="-1">
             {data?.IdentificacaoParlamentar.NomeCompletoParlamentar}
             {' | '}
-            <Link href={String(data?.IdentificacaoParlamentar.UrlPaginaParlamentar)}>
+            <Link
+              href={String(data?.IdentificacaoParlamentar.UrlPaginaParlamentar)}
+            >
               Página oficial
             </Link>
           </Text>
 
           <StatGroup as={SimpleGrid} spacing={4} mt="4">
-            <Stat
-              label="Membro da mesa"
-              data={data?.MembroMesa}
-            />
-            <Stat
-              label="Membro da liderança"
-              data={data?.MembroLideranca}
-            />
+            <Stat label="Membro da mesa" data={data?.MembroMesa} />
+            <Stat label="Membro da liderança" data={data?.MembroLideranca} />
             <Stat
               label="Titular em"
               data={data?.ComissoesTitular.length}
@@ -132,28 +144,23 @@ export default function Parlamentar() {
           mt="2"
           mb="8"
         >
-          {/* <Flex
-            bg={useColorModeValue('gray.50', 'gray.700')}
-            border="1px"
-            borderColor={useColorModeValue('gray.300', 'gray.600')}
-            p={4}
-            spacing={3}
-            rounded="lg"
-            direction="column"
-            flex="1"
+          <Tabs
+            variant="enclosed"
+            colorScheme="teal"
+            w="100%"
+            maxW="100%"
+            isLazy
+            isFitted
           >
-
-          </Flex> */}
-          <Tabs variant="enclosed" colorScheme="teal" w="100%" maxW="100%" isLazy isFitted>
             <TabList>
               <Tab>Titular</Tab>
               <Tab>Suplente</Tab>
             </TabList>
             <TabPanels>
-              <TabPanel >
+              <TabPanel>
                 <ComissionTable comissions={data?.ComissoesTitular} />
               </TabPanel>
-              <TabPanel >
+              <TabPanel>
                 <ComissionTable comissions={data?.ComissoesSuplente} />
               </TabPanel>
             </TabPanels>
@@ -166,29 +173,29 @@ export default function Parlamentar() {
 
 type SenatorListItem = {
   IdentificacaoParlamentar: Senator[];
-}
+};
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const response = await api.get('/senador/lista/atual');
-  const { Parlamentar } = response.data.ListaParlamentarEmExercicio.Parlamentares;
-  const senatorList = Parlamentar.map((senator: SenatorListItem) => senator.IdentificacaoParlamentar);
+  const senatorRawList =
+    response.data.ListaParlamentarEmExercicio.Parlamentares.Parlamentar;
+  const senatorList = senatorRawList.map(
+    (senator: SenatorListItem) => senator.IdentificacaoParlamentar,
+  );
 
   return {
-    paths: senatorList.map((senator: Senator) => {
-      return {
-        params: {
-          id: senator.CodigoParlamentar,
-        },
-      };
-    }),
-    fallback: "blocking",
+    paths: senatorList.map((senator: Senator) => ({
+      params: {
+        id: senator.CodigoParlamentar,
+      },
+    })),
+    fallback: 'blocking',
   };
-}
+};
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  await queryClient.prefetchQuery(
-    ['senator-info', String(params?.id)],
-    () => getSenatorInfo(String(params?.id))
+  await queryClient.prefetchQuery(['senator-info', String(params?.id)], () =>
+    getSenatorInfo(String(params?.id)),
   );
 
   return {
@@ -196,6 +203,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       // senator,
       dehydratedState: dehydrate(queryClient),
     },
-    revalidate: 60 * 60 * 24 // 24h
+    revalidate: 60 * 60 * 24, // 24h
   };
-}
+};
