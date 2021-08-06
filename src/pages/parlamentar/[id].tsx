@@ -33,13 +33,6 @@ import { Stat } from 'components/Stat';
 import { queryClient } from 'services/queryClient';
 import { getSenatorInfo, useSenatorInfo } from 'services/hooks/useSenatorInfo';
 import { ComissionTable } from 'components/ComissionTable';
-import { useState } from 'react';
-
-// interface SenatorProps {
-//   senator: any;
-//   tableMember: string;
-//   leadershipMember: string;
-// }
 
 export default function Parlamentar() {
   const { query } = useRouter();

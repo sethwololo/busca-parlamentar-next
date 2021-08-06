@@ -12,8 +12,7 @@ export function Header() {
       w="100%"
       maxW="1440"
       as="header"
-      px="2"
-      py="6"
+      p={[4, 6]}
       justify="space-between"
       alignItems="center"
       mb="8"

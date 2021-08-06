@@ -88,13 +88,7 @@ export function Card({ name, photoUrl, uf, party, id, fullName }: CardProps) {
               </Stack>
             </Flex>
 
-            <Text
-              fontWeight="medium"
-              opacity={0.8}
-              fontSize="xs"
-              isTruncated
-              maxW="70%"
-            >
+            <Text fontWeight="medium" opacity={0.8} fontSize="xs" maxW="50%">
               {fullName}
             </Text>
           </Box>
