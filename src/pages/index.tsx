@@ -132,7 +132,7 @@ export default function Home({ senators, parties, states }: HomeProps) {
             focusBorderColor={inputFocusColor}
           >
             {states.map(state => (
-              <option value={state.sigla} key={state.sigla}>
+              <option key={state.sigla} value={state.sigla}>
                 {state.sigla} - {state.nome}
               </option>
             ))}
