@@ -51,6 +51,7 @@ export default function Home({ senators, parties, states }: HomeProps) {
   const pageEnd = pageStart + Number(18);
 
   const handleSearchboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setPage(1);
     setSearchBox(event.target?.value);
   };
 
