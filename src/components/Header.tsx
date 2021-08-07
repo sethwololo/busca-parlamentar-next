@@ -15,7 +15,7 @@ export function Header() {
       p={[4, 6]}
       justify="space-between"
       alignItems="center"
-      mb="8"
+      mb={6}
     >
       <Link href="/" passHref>
         <Text

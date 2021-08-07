@@ -15,11 +15,13 @@ import { debounce } from 'lodash';
 
 import type { Senator } from 'types/senator';
 
+import { Footer } from 'components/Footer';
 import { Header } from 'components/Header';
 import { Card } from 'components/Card';
 
 import { api, apiIbge } from 'services/api';
 import { filterList } from 'lib/filterList';
+import { Pagination } from 'components/Pagination';
 
 interface HomeProps {
   senators: Senator[];
@@ -37,12 +39,16 @@ export default function Home({ senators, parties, states }: HomeProps) {
   const [searchBox, setSearchBox] = useState('');
   const [selectedParty, setSelectedParty] = useState('');
   const [selectedState, setSelectedState] = useState('');
+  const [page, setPage] = useState(1);
 
   const bgColor = useColorModeValue('gray.100', 'gray.900');
   const textColor = useColorModeValue('gray.900', 'gray.50');
   const inputFocusColor = useColorModeValue('teal.500', 'teal.200');
   const contentBgColor = useColorModeValue('white', 'gray.700');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
+
+  const pageStart = (Number(page) - 1) * Number(18);
+  const pageEnd = pageStart + Number(18);
 
   const handleSearchboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchBox(event.target?.value);
@@ -104,13 +110,14 @@ export default function Home({ senators, parties, states }: HomeProps) {
           />
 
           <Select
+            value={selectedParty}
             placeholder="Partido"
             onChange={e => setSelectedParty(e.target.value)}
             maxW={['full', 'full', '20%']}
             focusBorderColor={inputFocusColor}
           >
             {parties.map(party => (
-              <option key={party.Sigla}>
+              <option key={party.Sigla} value={party.Sigla}>
                 {party.Sigla} - {party.Nome}
               </option>
             ))}
@@ -135,28 +142,47 @@ export default function Home({ senators, parties, states }: HomeProps) {
             <Text fontSize="xl">Nenhum resultado encontrado :(</Text>
           </Box>
         ) : (
-          <SimpleGrid
-            columns={[1, 2, 2, 3]}
-            mx="auto"
-            w="100%"
-            maxW="1280"
-            spacing={4}
-            my="8"
-          >
-            {filteredList.map(senator => (
-              <Card
-                key={senator.CodigoParlamentar}
-                id={senator.CodigoParlamentar}
-                name={senator.NomeParlamentar}
-                fullName={senator.NomeCompletoParlamentar}
-                party={senator.SiglaPartidoParlamentar}
-                uf={senator.UfParlamentar}
-                photoUrl={senator.UrlFotoParlamentar}
+          <>
+            <SimpleGrid
+              columns={[1, 2, 2, 3]}
+              mx="auto"
+              w="100%"
+              maxW="1280"
+              spacing={4}
+              my="8"
+            >
+              {filteredList.slice(pageStart, pageEnd).map(senator => (
+                <Card
+                  key={senator.CodigoParlamentar}
+                  id={senator.CodigoParlamentar}
+                  name={senator.NomeParlamentar}
+                  fullName={senator.NomeCompletoParlamentar}
+                  party={senator.SiglaPartidoParlamentar}
+                  uf={senator.UfParlamentar}
+                  photoUrl={senator.UrlFotoParlamentar}
+                />
+              ))}
+            </SimpleGrid>
+            <Box
+              mx="auto"
+              p={2}
+              bg={contentBgColor}
+              rounded="lg"
+              border="1px"
+              boxShadow="sm"
+              borderColor={borderColor}
+            >
+              <Pagination
+                registersPerPage={18}
+                totalCountOfRegisters={filteredList.length}
+                onPageChange={setPage}
+                currentPage={page}
               />
-            ))}
-          </SimpleGrid>
+            </Box>
+          </>
         )}
       </Flex>
+      <Footer />
     </Box>
   );
 }

@@ -54,7 +54,7 @@ export function Card({ name, photoUrl, uf, party, id, fullName }: CardProps) {
           <Box w="100%">
             <Flex align="center" justify="space-between">
               <LinkOverlay>
-                <Text fontWeight="bold" mr="2" fontSize="sm" isTruncated>
+                <Text fontWeight="bold" lineHeight="4">
                   {name}
                 </Text>
               </LinkOverlay>
@@ -63,9 +63,9 @@ export function Card({ name, photoUrl, uf, party, id, fullName }: CardProps) {
                 align="center"
                 spacing={1}
                 ml={2}
+                mt={-4}
               >
                 <Badge
-                  ml="auto"
                   variant="outline"
                   colorScheme="purple"
                   fontSize={['xs', 'xx-small', 'xs']}
@@ -74,7 +74,6 @@ export function Card({ name, photoUrl, uf, party, id, fullName }: CardProps) {
                   {party}
                 </Badge>
                 <Badge
-                  ml="auto"
                   fontSize={['xs', 'xx-small', 'xs']}
                   variant="outline"
                   colorScheme="teal"
@@ -84,7 +83,12 @@ export function Card({ name, photoUrl, uf, party, id, fullName }: CardProps) {
               </Stack>
             </Flex>
 
-            <Text fontWeight="medium" opacity={0.8} fontSize="xs" maxW="50%">
+            <Text
+              lineHeight="shorter"
+              opacity={0.8}
+              fontSize="xx-small"
+              maxW="50%"
+            >
               {fullName}
             </Text>
           </Box>

@@ -17,7 +17,7 @@ import {
   VStack,
   Box,
 } from '@chakra-ui/react';
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Pagination } from './Pagination';
 
 interface ComissionTableProps {
@@ -46,7 +46,7 @@ export function ComissionTable({ comissions }: ComissionTableProps) {
   }, [comissions]);
 
   return (
-    <VStack w="100%" direction="column" align="center" spacing={1}>
+    <VStack w="100%" direction="column" align="center" spacing={1.5}>
       <SimpleGrid
         columns={[3, 3, 3, 4]}
         w="100%"
@@ -166,6 +166,7 @@ export function ComissionTable({ comissions }: ComissionTableProps) {
           ))
         )}
       </Flex>
+
       <Pagination
         totalCountOfRegisters={numberOfComissions}
         onPageChange={setPage}

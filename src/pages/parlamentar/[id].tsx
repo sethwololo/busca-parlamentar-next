@@ -16,7 +16,6 @@ import {
   TabPanels,
   Tabs,
   HStack,
-  Divider,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -34,6 +33,7 @@ import { queryClient } from 'services/queryClient';
 import { getSenatorInfo, useSenatorInfo } from 'services/hooks/useSenatorInfo';
 import { ComissionTable } from 'components/ComissionTable';
 import { useMemo } from 'react';
+import { Footer } from 'components/Footer';
 
 export default function Parlamentar() {
   const { query } = useRouter();
@@ -52,7 +52,7 @@ export default function Parlamentar() {
   }, [data?.IdentificacaoParlamentar.SexoParlamentar]);
 
   return (
-    <Box bg={bgColor} color={textColor} minH="100vh">
+    <Box bg={bgColor} color={textColor}>
       <Head>
         <title>
           {data?.IdentificacaoParlamentar.NomeParlamentar} | Busca Parlamentar
@@ -66,18 +66,18 @@ export default function Parlamentar() {
       </Head>
       <Header />
 
-      <Flex as="main" mx="4" align="center" direction="column">
+      <Flex as="main" mx={4} align="center" direction="column">
         <Flex
           as="section"
           align="center"
           direction="column"
           justify="center"
           w="100%"
-          maxW="1120px"
+          maxW={1120}
           bg={contentBgColor}
           rounded="xl"
-          shadow="md"
-          p="8"
+          boxShadow="sm"
+          p={8}
           position="relative"
           border="1px solid"
           borderColor={borderColor}
@@ -103,7 +103,7 @@ export default function Parlamentar() {
             size="2xl"
             showBorder
             color="teal"
-            mt="-20"
+            mt="-24"
             boxShadow="md"
           />
           <Flex mt="2">
@@ -118,11 +118,19 @@ export default function Parlamentar() {
           <Heading textAlign="center" mt="2">
             {data?.IdentificacaoParlamentar.NomeParlamentar}
           </Heading>
-          <HStack mt={-1} fontWeight="medium" mx="auto" opacity={0.8}>
+          <HStack
+            mt={-1}
+            spacing={4}
+            fontWeight="medium"
+            mx="auto"
+            opacity={0.8}
+          >
             <Text>
               {data?.IdentificacaoParlamentar.NomeCompletoParlamentar}
             </Text>
-            <Divider orientation="vertical" />
+            <Text as="span" fontWeight="normal" opacity={1}>
+              |
+            </Text>
             <Link
               passHref
               href={String(data?.IdentificacaoParlamentar.UrlPaginaParlamentar)}
@@ -133,7 +141,7 @@ export default function Parlamentar() {
             </Link>
           </HStack>
 
-          <StatGroup as={SimpleGrid} spacing={4} mt="4">
+          <StatGroup as={SimpleGrid} spacing={4} mt={4}>
             <Stat label="Membro da mesa" data={data?.MembroMesa} />
             <Stat label="Membro da liderança" data={data?.MembroLideranca} />
             <Stat
@@ -156,7 +164,7 @@ export default function Parlamentar() {
           maxW="1120px"
           bg={contentBgColor}
           rounded="xl"
-          shadow="md"
+          boxShadow="sm"
           position="relative"
           border="1px solid"
           borderColor={borderColor}
@@ -186,6 +194,7 @@ export default function Parlamentar() {
           </Tabs>
         </Flex>
       </Flex>
+      <Footer />
     </Box>
   );
 }
