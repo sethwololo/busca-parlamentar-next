@@ -1,34 +1,81 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<p align="center">
+  <a href="https://busca-parlamentar.vercel.app" >
+    <img src="https://svgshare.com/i/Zua.svg" alt="BuscaParlamentar" width="420" />
+  </a>
+</p>
+<p align="center">
+  Busque dados sobre os senadores rapidamente
+</p>
+&nbsp;&nbsp;
+<p align="center">
+  <a href="#sobre">Sobre</a> •
+  <a href="#pré-requisitos">Pré-requisitos</a> •
+  <a href="#instalando-e-rodando">Instalando e rodando</a> •
+  <a href="#em-produção">Em produção</a>
+</p>
 
-## Getting Started
+## **Sobre**
 
-First, run the development server:
+O **BuscaParlamentar** é uma aplicação que busca dados da API de Dados Abertos do Senado Federal e do Serviço de Dados do IBGE para disponibilizar os dados dos parlamentares do Senado Federal de maneira clara e objetiva.
+
+> 💡 ***A aplicação gera as páginas de forma estática e revalida os dados a cada 24 horas. Em caso de erro ao buscar os dados em alguma das APIs, será apresentada uma página sem dados e haverá uma nova tentativa de revalidação em duas horas.***
+
+### **Esse projeto foi construído com:**
++ [Typescript](https://chakra-ui.com/)
++ [React](https://reactjs.org/)
++ [NextJS](https://nextjs.org/)
++ [Chakra UI](https://chakra-ui.com/)
+
+
+## **Pré-requisitos**
+
+É necessario ter o NodeJS (12.0+) instalado, juntamente com o NPM ou Yarn. O NextJS oferece suporte a sistemas Linux, Windows e MacOS
+
+## **Instalando e rodando**
+
+### Instalando dependências
+
+Apos clonar ou baixar o ZIP do projeto, rode o seguinte comando na pasta raíz para baixar as dependências
+
+```bash
+npm install
+# ou
+yarn install
+```
+
+### Iniciando o servidor de desenvolvimento
+
+Para iniciar o servidor de desenvolvimento, execute o seguinte comando
 
 ```bash
 npm run dev
-# or
+# ou
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> A aplicação executará em [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## **Em produção**
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.tsx`.
+### Gerando e executando uma build de produção
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Para gerar a build de produção, execute o comando 
 
-## Learn More
+```bash
+npm run build
+# ou
+yarn build
+```
 
-To learn more about Next.js, take a look at the following resources:
+Após gerar o build, execute o servidor de produção com
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# É possível mudar a porta com o argumento -p
+# Por exemplo: yarn start -p 3001
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+npm run start
+# ou
+yarn start
+```
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
