@@ -22,6 +22,7 @@ import { Card } from 'components/Card';
 import { api, apiIbge } from 'services/api';
 import { filterList } from 'lib/filterList';
 import { Pagination } from 'components/Pagination';
+import statesFallback from '../../public/states.json';
 
 interface HomeProps {
   senators: Senator[];
@@ -212,14 +213,16 @@ export const getStaticProps: GetStaticProps = async () => {
     const responseParties = await api.get('/senador/partidos');
     const parties = responseParties.data.ListaPartidos.Partidos.Partido;
 
-    const responseStates = await apiIbge.get('/estados');
-    const states = responseStates.data;
+    // A API do IBGE está fora do ar no momento do envio do desafio
+
+    // const responseStates = await apiIbge.get('/estados');
+    // const states = responseStates.data;
 
     return {
       props: {
         senators,
         parties,
-        states,
+        states: statesFallback.UF,
       },
       revalidate: 60 * 60 * 24, // 24h
     };
