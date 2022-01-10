@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import {
@@ -31,6 +32,7 @@ import { Footer } from 'components/Footer';
 import { useColors } from 'styles/useColors';
 import { Senator, SenatorListApiResponse } from 'types/senatorList';
 import { Comission, ComissionApiResponse } from 'types/comission';
+import { sortBy } from 'lodash';
 
 interface ParlamentarProps {
   senator: Senator | null;
@@ -76,17 +78,17 @@ export default function Parlamentar({ senator, comissions }: ParlamentarProps) {
   const pronoun = SexoParlamentar === 'Masculino' ? 'o' : 'a';
 
   return (
-    <Box bg={bgColor} color={textColor}>
+    <Box minH="100vh" bg={bgColor} color={textColor}>
       <Head>
         <title>{NomeParlamentar} | Busca Parlamentar</title>
         <meta
           name="description"
-          content={`Informações sobre ${pronoun} ${FormaTratamento.toLowerCase()} ${NomeParlamentar}`}
+          content={`Informações sobre ${pronoun} ${FormaTratamento.toLowerCase()}${NomeParlamentar}`}
         />
       </Head>
       <Header />
 
-      <Flex as="main" mx={4} align="center" direction="column">
+      <Flex as="main" mx={4} align="center" direction="column" h="full">
         <Flex
           as="section"
           align="center"
@@ -236,12 +238,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-// interface Params {
-//   params: {
-//     id: string;
-//   };
-// }
-
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
     const senatorList = await api.get<SenatorListApiResponse>(
@@ -257,10 +253,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           senatorItem.IdentificacaoParlamentar.CodigoParlamentar === params?.id,
       )
       .map(senatorItem => {
-        senatorItem.IdentificacaoParlamentar.UrlFotoParlamentar.replace(
-          'http',
-          'https',
-        );
+        senatorItem.IdentificacaoParlamentar.UrlFotoParlamentar =
+          senatorItem.IdentificacaoParlamentar.UrlFotoParlamentar.replace(
+            'http',
+            'https',
+          );
         return senatorItem;
       });
 
@@ -273,12 +270,18 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         .MembroComissoes;
 
     const comissions = {
-      asHolder: Comissao.filter(
-        comission => comission.DescricaoParticipacao === 'Titular',
-      ),
-      asAlternate: Comissao.filter(
-        comission => comission.DescricaoParticipacao === 'Suplente',
-      ),
+      asHolder: sortBy(
+        Comissao.filter(
+          comission => comission.DescricaoParticipacao === 'Titular',
+        ),
+        dateObj => new Date(dateObj.DataInicio),
+      ).reverse(),
+      asAlternate: sortBy(
+        Comissao.filter(
+          comission => comission.DescricaoParticipacao === 'Suplente',
+        ),
+        dateObj => new Date(dateObj.DataInicio),
+      ).reverse(),
     };
 
     return {

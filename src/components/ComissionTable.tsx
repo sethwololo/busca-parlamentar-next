@@ -18,6 +18,7 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
+import { format } from 'date-fns';
 import { Pagination } from './Pagination';
 
 interface ComissionTableProps {
@@ -136,7 +137,7 @@ export function ComissionTable({ comissions }: ComissionTableProps) {
                         <Text fontWeight="medium" mr="1">
                           Início:
                         </Text>
-                        {comission.DataInicio}
+                        {format(new Date(comission.DataInicio), 'dd/MM/yyyy')}
                       </Text>
 
                       {comission.DataFim && (
@@ -144,7 +145,7 @@ export function ComissionTable({ comissions }: ComissionTableProps) {
                           <Text fontWeight="medium" mr="1">
                             Fim:
                           </Text>
-                          {comission.DataFim}
+                          {format(new Date(comission.DataFim), 'dd/MM/yyyy')}
                         </Text>
                       )}
                     </PopoverBody>
@@ -153,10 +154,12 @@ export function ComissionTable({ comissions }: ComissionTableProps) {
               ) : (
                 <>
                   <Text textAlign="center" fontSize={['xx-small', 'xs', 'sm']}>
-                    {comission.DataInicio}
+                    {format(new Date(comission.DataInicio), 'dd/MM/yyyy')}
                   </Text>
                   <Text textAlign="center" fontSize={['xx-small', 'xs', 'sm']}>
-                    {comission.DataFim ?? '-'}
+                    {comission.DataFim
+                      ? format(new Date(comission.DataFim), 'dd/MM/yyyy')
+                      : '-'}
                   </Text>
                 </>
               )}
