@@ -35,14 +35,13 @@ import { ComissionTable } from 'components/ComissionTable';
 import { useMemo } from 'react';
 import { Footer } from 'components/Footer';
 
+import { useColors } from 'styles/useColors';
+
 export default function Parlamentar() {
   const { query } = useRouter();
   const { data } = useSenatorInfo(String(query.id));
+  const { bgColor, borderColor, contentBgColor, textColor } = useColors();
 
-  const bgColor = useColorModeValue('gray.100', 'gray.900');
-  const textColor = useColorModeValue('gray.900', 'gray.50');
-  const contentBgColor = useColorModeValue('white', 'gray.700');
-  const borderColor = useColorModeValue('gray.200', 'gray.600');
 
   const pronoun = useMemo(() => {
     if (data?.IdentificacaoParlamentar.SexoParlamentar === 'Masculino') {
@@ -59,9 +58,8 @@ export default function Parlamentar() {
         </title>
         <meta
           name="description"
-          content={`Informações sobre ${pronoun} senador${
-            pronoun === 'a' ? 'a' : ''
-          } ${data?.IdentificacaoParlamentar.NomeParlamentar}`}
+          content={`Informações sobre ${pronoun} senador${pronoun === 'a' ? 'a' : ''
+            } ${data?.IdentificacaoParlamentar.NomeParlamentar}`}
         />
       </Head>
       <Header />
