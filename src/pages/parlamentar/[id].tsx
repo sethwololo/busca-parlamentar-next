@@ -16,50 +16,72 @@ import {
   TabPanels,
   Tabs,
   HStack,
-  useColorModeValue,
+  Center,
 } from '@chakra-ui/react';
 import { FiArrowLeft } from 'react-icons/fi';
-import { dehydrate } from 'react-query/hydration';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
-
-import type { Senator } from 'types/senator';
 
 import { api } from 'services/api';
 import { Header } from 'components/Header';
 
 import { Stat } from 'components/Stat';
-import { queryClient } from 'services/queryClient';
-import { getSenatorInfo, useSenatorInfo } from 'services/hooks/useSenatorInfo';
 import { ComissionTable } from 'components/ComissionTable';
-import { useMemo } from 'react';
 import { Footer } from 'components/Footer';
 
 import { useColors } from 'styles/useColors';
+import { Senator, SenatorListApiResponse } from 'types/senatorList';
+import { Comission, ComissionApiResponse } from 'types/comission';
 
-export default function Parlamentar() {
-  const { query } = useRouter();
-  const { data } = useSenatorInfo(String(query.id));
+interface ParlamentarProps {
+  senator: Senator | null;
+  comissions: {
+    asHolder: Comission[];
+    asAlternate: Comission[];
+  } | null;
+}
+
+export default function Parlamentar({ senator, comissions }: ParlamentarProps) {
+  // const { data } = useSenatorInfo(String(query.id));
   const { bgColor, borderColor, contentBgColor, textColor } = useColors();
 
+  if (!senator || !comissions) {
+    return (
+      <Box minH="100vh" bg={bgColor} color={textColor}>
+        <Head>
+          <title>Erro | Busca Parlamentar</title>
+        </Head>
+        <Header />
+        <Center mx="auto" py="10">
+          <Text fontSize="2xl">
+            Erro ao buscar os dados... Tentando novamente em 1h
+          </Text>
+        </Center>
+      </Box>
+    );
+  }
 
-  const pronoun = useMemo(() => {
-    if (data?.IdentificacaoParlamentar.SexoParlamentar === 'Masculino') {
-      return 'o';
-    }
-    return 'a';
-  }, [data?.IdentificacaoParlamentar.SexoParlamentar]);
+  const {
+    SexoParlamentar,
+    FormaTratamento,
+    NomeParlamentar,
+    NomeCompletoParlamentar,
+    UrlFotoParlamentar,
+    UfParlamentar,
+    SiglaPartidoParlamentar,
+    UrlPaginaParlamentar,
+    MembroMesa,
+    MembroLideranca,
+  } = senator.IdentificacaoParlamentar;
+
+  const pronoun = SexoParlamentar === 'Masculino' ? 'o' : 'a';
 
   return (
     <Box bg={bgColor} color={textColor}>
       <Head>
-        <title>
-          {data?.IdentificacaoParlamentar.NomeParlamentar} | Busca Parlamentar
-        </title>
+        <title>{NomeParlamentar} | Busca Parlamentar</title>
         <meta
           name="description"
-          content={`Informações sobre ${pronoun} senador${pronoun === 'a' ? 'a' : ''
-            } ${data?.IdentificacaoParlamentar.NomeParlamentar}`}
+          content={`Informações sobre ${pronoun} ${FormaTratamento.toLowerCase()} ${NomeParlamentar}`}
         />
       </Head>
       <Header />
@@ -96,8 +118,8 @@ export default function Parlamentar() {
 
           <Avatar
             borderColor={borderColor}
-            name={data?.IdentificacaoParlamentar.NomeParlamentar}
-            src={data?.IdentificacaoParlamentar.UrlFotoParlamentar}
+            name={NomeParlamentar}
+            src={UrlFotoParlamentar}
             size="2xl"
             showBorder
             color="teal"
@@ -106,15 +128,15 @@ export default function Parlamentar() {
           />
           <Flex mt="2">
             <Badge colorScheme="purple" variant="outline" fontSize="sm" mr="1">
-              {data?.IdentificacaoParlamentar.SiglaPartidoParlamentar}
+              {SiglaPartidoParlamentar}
             </Badge>
             <Badge colorScheme="teal" variant="outline" fontSize="sm">
-              {data?.IdentificacaoParlamentar.UfParlamentar}
+              {UfParlamentar}
             </Badge>
           </Flex>
 
           <Heading textAlign="center" mt="2">
-            {data?.IdentificacaoParlamentar.NomeParlamentar}
+            {NomeParlamentar}
           </Heading>
           <HStack
             mt={-1}
@@ -123,16 +145,11 @@ export default function Parlamentar() {
             mx="auto"
             opacity={0.8}
           >
-            <Text>
-              {data?.IdentificacaoParlamentar.NomeCompletoParlamentar}
-            </Text>
+            <Text>{NomeCompletoParlamentar}</Text>
             <Text as="span" fontWeight="normal" opacity={1}>
               |
             </Text>
-            <Link
-              passHref
-              href={String(data?.IdentificacaoParlamentar.UrlPaginaParlamentar)}
-            >
+            <Link passHref href={String(UrlPaginaParlamentar)}>
               <Text as="a" textDecor="underline">
                 Página oficial
               </Text>
@@ -140,16 +157,16 @@ export default function Parlamentar() {
           </HStack>
 
           <StatGroup as={SimpleGrid} spacing={4} mt={4}>
-            <Stat label="Membro da mesa" data={data?.MembroMesa} />
-            <Stat label="Membro da liderança" data={data?.MembroLideranca} />
+            <Stat label="Membro da mesa" data={MembroMesa} />
+            <Stat label="Membro da liderança" data={MembroLideranca} />
             <Stat
               label="Titular em"
-              data={data?.ComissoesTitular.length}
+              data={comissions.asHolder.length}
               helpText="comissões"
             />
             <Stat
               label="Suplente em"
-              data={data?.ComissoesSuplente.length}
+              data={comissions.asAlternate.length}
               helpText="comissões"
             />
           </StatGroup>
@@ -183,10 +200,10 @@ export default function Parlamentar() {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <ComissionTable comissions={data?.ComissoesTitular} />
+                <ComissionTable comissions={comissions.asHolder} />
               </TabPanel>
               <TabPanel>
-                <ComissionTable comissions={data?.ComissoesSuplente} />
+                <ComissionTable comissions={comissions.asAlternate} />
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -197,20 +214,20 @@ export default function Parlamentar() {
   );
 }
 
-type SenatorListItem = {
-  IdentificacaoParlamentar: Senator[];
-};
-
 export const getStaticPaths: GetStaticPaths = async () => {
-  const response = await api.get('/senador/lista/atual');
+  const response = await api.get<SenatorListApiResponse>(
+    '/senador/lista/atual',
+  );
+
   const senatorRawList =
     response.data.ListaParlamentarEmExercicio.Parlamentares.Parlamentar;
+
   const senatorList = senatorRawList.map(
-    (senator: SenatorListItem) => senator.IdentificacaoParlamentar,
+    senator => senator.IdentificacaoParlamentar,
   );
 
   return {
-    paths: senatorList.map((senator: Senator) => ({
+    paths: senatorList.map(senator => ({
       params: {
         id: senator.CodigoParlamentar,
       },
@@ -219,15 +236,65 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  await queryClient.prefetchQuery(['senator-info', String(params?.id)], () =>
-    getSenatorInfo(String(params?.id)),
-  );
+// interface Params {
+//   params: {
+//     id: string;
+//   };
+// }
 
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-    revalidate: 60 * 60 * 24, // 24h
-  };
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  try {
+    const senatorList = await api.get<SenatorListApiResponse>(
+      '/senador/lista/atual',
+    );
+
+    const senators =
+      senatorList.data.ListaParlamentarEmExercicio.Parlamentares.Parlamentar;
+
+    const senator = senators
+      .filter(
+        senatorItem =>
+          senatorItem.IdentificacaoParlamentar.CodigoParlamentar === params?.id,
+      )
+      .map(senatorItem => {
+        senatorItem.IdentificacaoParlamentar.UrlFotoParlamentar.replace(
+          'http',
+          'https',
+        );
+        return senatorItem;
+      });
+
+    const comissionResponse = await api.get<ComissionApiResponse>(
+      `/senador/${params?.id}/comissoes`,
+    );
+
+    const { Comissao } =
+      comissionResponse.data.MembroComissaoParlamentar.Parlamentar
+        .MembroComissoes;
+
+    const comissions = {
+      asHolder: Comissao.filter(
+        comission => comission.DescricaoParticipacao === 'Titular',
+      ),
+      asAlternate: Comissao.filter(
+        comission => comission.DescricaoParticipacao === 'Suplente',
+      ),
+    };
+
+    return {
+      props: {
+        senator: senator[0],
+        comissions,
+      },
+      revalidate: 60 * 60 * 24, // 24h
+    };
+  } catch {
+    return {
+      props: {
+        senator: null,
+        comissions: null,
+      },
+      revalidate: 60 * 30, // 30m
+    };
+  }
 };

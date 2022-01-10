@@ -1,4 +1,4 @@
-import type { Comission } from 'types/senator';
+import { Comission } from 'types/comission';
 import { FiInfo } from 'react-icons/fi';
 import {
   Badge,
@@ -21,7 +21,7 @@ import { useMemo, useState } from 'react';
 import { Pagination } from './Pagination';
 
 interface ComissionTableProps {
-  comissions?: Comission[];
+  comissions: Comission[];
 }
 
 export function ComissionTable({ comissions }: ComissionTableProps) {
@@ -112,9 +112,7 @@ export function ComissionTable({ comissions }: ComissionTableProps) {
                   variant="outline"
                   fontSize={['xx-small', 'xs', 'xs']}
                 >
-                  {isSmallScreen
-                    ? comission.IdentificacaoComissao.SiglaCasaComissao
-                    : comission.IdentificacaoComissao.NomeCasaComissao}
+                  {comission.IdentificacaoComissao.SiglaCasaComissao}
                 </Badge>
               </Box>
 
@@ -124,7 +122,7 @@ export function ComissionTable({ comissions }: ComissionTableProps) {
                     <Box>
                       <IconButton
                         aria-label="Visualizar datas"
-                        icon={<FiInfo />}
+                        icon={<FiInfo size={18} />}
                         variant="outline"
                         colorScheme="teal"
                         size="sm"
@@ -141,7 +139,7 @@ export function ComissionTable({ comissions }: ComissionTableProps) {
                         {comission.DataInicio}
                       </Text>
 
-                      {comission.DataFim !== '-' && (
+                      {comission.DataFim && (
                         <Text as="span" display="flex">
                           <Text fontWeight="medium" mr="1">
                             Fim:
@@ -158,7 +156,7 @@ export function ComissionTable({ comissions }: ComissionTableProps) {
                     {comission.DataInicio}
                   </Text>
                   <Text textAlign="center" fontSize={['xx-small', 'xs', 'sm']}>
-                    {comission.DataFim}
+                    {comission.DataFim ?? '-'}
                   </Text>
                 </>
               )}
