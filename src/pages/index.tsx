@@ -28,10 +28,7 @@ import { useFilter } from 'hooks/useFilter';
 
 interface HomeProps {
   senators: IdentificacaoParlamentar[];
-  parties: {
-    Sigla: string;
-    Nome: string;
-  }[];
+  parties: string[];
   states: State[];
 }
 
@@ -130,8 +127,8 @@ export default function Home({ senators, parties, states }: HomeProps) {
               focusBorderColor={inputFocusColor}
             >
               {parties.map(party => (
-                <option key={party.Sigla} value={party.Sigla}>
-                  {party.Sigla} - {party.Nome}
+                <option key={party} value={party}>
+                  {party}
                 </option>
               ))}
             </Select>
@@ -232,8 +229,10 @@ export const getStaticProps: GetStaticProps = async () => {
       };
     });
 
-    const responseParties = await api.get('/senador/partidos');
-    const parties = responseParties.data.ListaPartidos.Partidos.Partido;
+    // const responseParties = await api.get('/senador/partidos');
+    const parties = Array.from(
+      new Set(senators.map(senator => senator.SiglaPartidoParlamentar)),
+    );
 
     const responseStates = await apiIbge.get<StatesApiResponse>(
       '/estados?orderBy=nome',
@@ -248,8 +247,9 @@ export const getStaticProps: GetStaticProps = async () => {
       },
       revalidate: 60 * 60 * 24, // 24h
     };
-  } catch {
+  } catch (error) {
     // Retorna array vazio caso não consiga encontrar resultados
+    console.error(error);
     return {
       props: {
         senators: [],
